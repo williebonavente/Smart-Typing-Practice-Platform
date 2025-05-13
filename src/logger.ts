@@ -8,32 +8,38 @@ export interface Keystroke {
 const keystrokeBuffer: Keystroke[] = [];
 
 export function getKeystrokes(): Keystroke[] {
-  console.log("📜 Retrieving keystrokes...", keystrokeBuffer);
   return keystrokeBuffer;
 }
 
 export function startLoggingKeystrokes() {
+
+  // Clear the buffer before starting
+  keystrokeBuffer.length = 0;
+  if (!process.stdin.isTTY) {
+    console.error("This script requires a TTY (terminal) to run.");
+    return;
+  }
+
   process.stdin.setRawMode(true);
   process.stdin.resume();
-  process.stdin.setEncoding("utf8"); // Ensure data is emitted as strings
+  process.stdin.setEncoding("utf8"); // This makes incoming data a string
 
   console.log("⏺ Keystroke logging started. Press Ctrl+C to exit.\n");
 
-  process.stdin.on("data", (key) => {
+  process.stdin.on("data", (key: string) => {
     const timestamp = Date.now();
 
-    // Debugging statement
-    console.log(`Key pressed: ${key}, Timestamp: ${timestamp}`);
-
-    // Don't handle Ctrl+C here — let index.ts handle it
-    if (key.toString() === "\u0003") { // Convert key to string for comparison
-        console.log("⏹ Keystroke logging stopped.");
-        process.stdin.pause();
-        return;
+    // Ctrl+C exits — don't handle it here, let index.ts handle SIGINT
+    if (key === "\u0003") {
+      process.stdin.setRawMode(false);
+      
+      process.emit("SIGINT");
+      console.log("Exiting keystroke logging...");
+      return;
     }
 
-    const normalizedKey = key.toString() === " " ? "[space]" : key.toString().replace(/\r/, "\\r");
-    keystrokeBuffer.push({ key: key.toString(), timestamp });
+    const normalizedKey = key === " " ? "[space]" : key.replace(/\r/, "\\r");
+    keystrokeBuffer.push({ key, timestamp });
 
     console.log(`Key: ${normalizedKey}, Timestamp: ${timestamp}`);
   });

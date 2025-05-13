@@ -7,6 +7,12 @@ console.log("🎯 Typing Practice Terminal App Initialized");
 process.on("SIGINT", () => {
     console.log("\n📊 Analyzing session...");
     const keystrokes = getKeystrokes();
+    
+    if (!keystrokes || keystrokes.length === 0) {
+        console.log("No keystrokes recorded. Exiting...");
+        process.exit();
+    }
+
     const stats = analyzeTyping({ keystrokes });
     console.log("📈 Analysis complete!", stats);
     console.log("\n📝 Keystrokes:", keystrokes);
@@ -15,10 +21,9 @@ process.on("SIGINT", () => {
     console.log(`- Duration: ${stats.elapsedTimeSeconds.toFixed(2)} seconds`);
     console.log(`- WPM: ${stats.wpm}`);
     console.log(`- CPM: ${stats.cpm}`);
-  
+
     process.exit();
 
 });
-
 
 startLoggingKeystrokes();
