@@ -8,6 +8,10 @@ export interface TypingStats {
   elapsedTimeMinutes: number;
   wpm: number;
   cpm: number;
+  // Add any other properties you want to include in the stats
+  // For example, you might want to include the date of the session
+  date?: string; // Optional date property
+  // add more typing-related statistics if needed
 }
 
 /**
@@ -36,6 +40,7 @@ export function analyzeTyping({ keystrokes }: { keystrokes: Keystroke[]; }): Typ
     };
   }
 
+  // Calculate total characters, elapsed time, WPM, and CPM
   const totalCharacters = keystrokes.length;
   const startTime = keystrokes[0].timestamp;
   const endTime = keystrokes[keystrokes.length - 1].timestamp;
@@ -46,14 +51,21 @@ export function analyzeTyping({ keystrokes }: { keystrokes: Keystroke[]; }): Typ
   const wpm = parseFloat(((totalCharacters / 5) / elapsedTimeMinutes).toFixed(2));
   const cpm = parseFloat((totalCharacters / elapsedTimeMinutes).toFixed(2));
 
+  // Date is optional, so we can set it to undefined or a specific date
+  const date = new Date().toISOString(); // Current date in ISO format
+  // If you want to set a specific date, you can do so here
+  // const date = "2023-10-01T12:00:00Z"; // Example specific date
+  // If you want to include the date in the stats, you can add it to the return object
+  // const date = new Date().toISOString(); // Current date in ISO format
   const stats = {
     totalCharacters,
     elapsedTimeSeconds,
     elapsedTimeMinutes,
     wpm,
-    cpm
+    cpm,
+    date // Include the date in the stats
   };
-
+  // Log the stats for debugging
   console.log("Typing stats calculated:", stats);
   return stats;
 }
