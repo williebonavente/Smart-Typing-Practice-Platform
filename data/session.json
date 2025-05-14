@@ -1,0 +1,26 @@
+[
+  {
+    "totalCharacters": 4,
+    "elapsedTimeSeconds": 1.375,
+    "elapsedTimeMinutes": 0.022916666666666665,
+    "wpm": 34.91,
+    "cpm": 174.55,
+    "date": "2025-05-14T03:42:38.569Z"
+  },
+  {
+    "totalCharacters": 7,
+    "elapsedTimeSeconds": 3.136,
+    "elapsedTimeMinutes": 0.05226666666666667,
+    "wpm": 26.79,
+    "cpm": 133.93,
+    "date": "2025-05-14T03:44:32.400Z"
+  },
+  {
+    "totalCharacters": 8,
+    "elapsedTimeSeconds": 3.219,
+    "elapsedTimeMinutes": 0.053649999999999996,
+    "wpm": 29.82,
+    "cpm": 149.11,
+    "date": "2025-05-14T03:45:12.709Z"
+  }
+]

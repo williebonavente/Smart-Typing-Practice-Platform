@@ -1,6 +1,7 @@
 // index.ts
 import { startLoggingKeystrokes, getKeystrokes } from "./src/logger";
 import { analyzeTyping } from "./src/analyzer";
+import { saveSession } from "./src/storage";
 
 console.log("🎯 Typing Practice Terminal App Initialized");
 
@@ -22,8 +23,10 @@ process.on("SIGINT", () => {
     console.log(`- WPM: ${stats.wpm}`);
     console.log(`- CPM: ${stats.cpm}`);
 
+    // Save to file
+    saveSession(stats);
+    console.log("✅ Session saved!");
     process.exit();
-
 });
 
 startLoggingKeystrokes();

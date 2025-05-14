@@ -137,3 +137,7 @@ dist
 
 # launch.json files
 .vscode/launch.json
+
+
+# json files logging
+data/session.json
