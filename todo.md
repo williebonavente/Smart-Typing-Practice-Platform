@@ -12,9 +12,8 @@
 ---
 
 ### 🛠️ In Progress / Next Steps
-
 #### 🧩 1. **Text Prompt System**
-
+*Currently doing*
 * [ ] Add a text prompt generator (quote, sentence, word list)
 * [ ] Display prompt at app start (or on demand)
 * [ ] Log accuracy by comparing typed characters to prompt
