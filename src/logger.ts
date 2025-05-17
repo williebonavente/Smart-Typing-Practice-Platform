@@ -1,4 +1,6 @@
 // src/logger.ts
+import readLine from "readline";
+import { renderPromptRealtime } from "./ui/promptUI";
 
 export interface Keystroke {
   key: string;
@@ -6,11 +8,30 @@ export interface Keystroke {
 }
 
 const keystrokeBuffer: Keystroke[] = [];
-let typedText = ""; // New variable to store typed text
+let keystrokes: { key: string; timestamp: number }[] = [];
+
+let typedText = ""; 
 
 export function getKeystrokes(): Keystroke[] {
   return keystrokeBuffer;
 }
+
+export function getTypedText(): string {
+  const text: string[] = [];
+  
+  for (const { key } of keystrokeBuffer) {
+    if (key === "\x7f") {
+      // Handle backspace
+      text.pop(); 
+    } else {
+      text.push(key);
+    }
+  }
+  // return keystrokes.map(k => k.key).join(""); 
+  return text.join("");
+}
+
+
 
 export function startLoggingKeystrokes() {
 
@@ -44,6 +65,7 @@ export function startLoggingKeystrokes() {
     const normalizedKey = key === " " ? "[space]" : key.replace(/\r/, "\\r");
     keystrokeBuffer.push({ key, timestamp });
 
-    console.log(`Key: ${normalizedKey}, Timestamp: ${timestamp}`);
+    // DEBUG: Log the keystroke
+    // console.log(`Key: ${normalizedKey}, Timestamp: ${timestamp}`);
   });
 }

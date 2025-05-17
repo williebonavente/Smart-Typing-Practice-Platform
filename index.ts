@@ -1,11 +1,15 @@
-// index.ts
-import { startLoggingKeystrokes, getKeystrokes } from "./src/logger";
+import { startLoggingKeystrokes, getKeystrokes, getTypedText } from "./src/logger";
 import { analyzeTyping } from "./src/analyzer";
 import { saveSession, loadSessions } from "./src/storage";
 import { evaluatePromptTyping } from "./src/evaluator";
 import { handleCLIArgs } from "./src/cliHandler";
 import { getPrompt } from "./src/prompts/promptManager";
-import { showPrompt } from "./src/ui/promptUI";
+import { showPrompt,
+         renderPrompt,
+         clearScreen,
+         createText,
+         renderStats
+ } from "./src/ui/promptUI";
 
 // // Handle command line arguments -> CLI here
 const args = process.argv.slice(2);
@@ -16,29 +20,27 @@ const prompt = getPrompt();
 showPrompt(prompt);
 startLoggingKeystrokes();
 
-// console.log("🎯 Typing Practice Terminal App Initialized");
 
 process.on("SIGINT", () => {
-    console.log("\n📊 Analyzing session...");
-    // const keystrokes = getKeystrokes();
+    // clearScreen();
+    console.log(createText("Analayzing session...", 80)); // Adjust width as needed
+
+    const keystrokes = getKeystrokes();
     const typed = getTypedText();
+    
+    if (!keystrokes || keystrokes.length === 0) {
+        console.log("No keystrokes recorded. Exiting...");
+        process.exit();
+    }
+    const stats = analyzeTyping({ keystrokes });
     const accuracyStats = evaluatePromptTyping(prompt, typed);
+    console.log("\n Prompt vs. Typed Text");
+    renderPrompt(prompt, typed); // Compare Visually
 
-    // if (!keystrokes || keystrokes.length === 0) {
-    //     console.log("No keystrokes recorded. Exiting...");
-    //     process.exit();
-    // }
-    // const stats = analyzeTyping({ keystrokes });
-    // console.log("📈 Analysis complete!", stats);
-    // console.log("\n📝 Keystrokes:", keystrokes);
-    // console.log("\n🧠 Typing Stats:");
-    // console.log(`- Total Characters: ${stats.totalCharacters}`);
-    // console.log(`- Duration: ${stats.elapsedTimeSeconds.toFixed(2)} seconds`);
-    // console.log(`- WPM: ${stats.wpm}`);
-    // console.log(`- CPM: ${stats.cpm}`);
+    renderStats(stats, { accuracy: accuracyStats.accuracyPercentage }); // Render stats
 
-    // // Save to file
     // saveSession(stats);
+    console.log(accuracyStats)
     console.log("✅ Session saved!");
 
     process.exit();
