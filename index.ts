@@ -17,8 +17,8 @@ const args = process.argv.slice(2);
 if (handleCLIArgs(args)) process.exit(0);
 
 const prompt = getPrompt();
-showPrompt(prompt);
-startLoggingKeystrokes();
+// showPrompt(prompt);
+startLoggingKeystrokes(prompt);
 
 
 process.on("SIGINT", () => {
@@ -45,3 +45,7 @@ process.on("SIGINT", () => {
 
     process.exit();
 });
+
+
+
+// TODO: Fix the cursor positioning issue

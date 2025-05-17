@@ -24,5 +24,3 @@ export function viewSessions(): void {
             console.log("──────────────────────────────");
         });
 }
-console.log("📖 View more sessions with --view or --history");
-console.log("👋 Exiting...");

@@ -8,37 +8,21 @@ export interface Keystroke {
 }
 
 const keystrokeBuffer: Keystroke[] = [];
-let keystrokes: { key: string; timestamp: number }[] = [];
-
-let typedText = ""; 
 
 export function getKeystrokes(): Keystroke[] {
   return keystrokeBuffer;
 }
 
 export function getTypedText(): string {
-  const text: string[] = [];
-  
-  for (const { key } of keystrokeBuffer) {
-    if (key === "\x7f") {
-      // Handle backspace
-      text.pop(); 
-    } else {
-      text.push(key);
-    }
-  }
-  // return keystrokes.map(k => k.key).join(""); 
-  return text.join("");
+  return keystrokeBuffer.map(k => k.key).join("");
 }
 
-
-
-export function startLoggingKeystrokes() {
+export function startLoggingKeystrokes(prompt: string) {
 
   // Clear the buffer before starting
   keystrokeBuffer.length = 0;
   if (!process.stdin.isTTY) {
-    console.error("This script requires a TTY (terminal) to run.");
+    console.error("❌ This script requires a TTY (terminal) to run.");
     return;
   }
 
@@ -46,7 +30,12 @@ export function startLoggingKeystrokes() {
   process.stdin.resume();
   process.stdin.setEncoding("utf8"); // This makes incoming data a string
 
-  console.log("⏺ Keystroke logging started. Press Ctrl+C to exit.\n");
+  // console.log("⏺ Keystroke logging started. Press Ctrl+C to exit.\n");
+
+  let typedText = "";
+
+  // Initial Render
+  renderPromptRealtime(prompt, typedText);
 
   process.stdin.on("data", (key: string) => {
     const timestamp = Date.now();
@@ -54,18 +43,46 @@ export function startLoggingKeystrokes() {
     // Ctrl+C exits — don't handle it here, let index.ts handle SIGINT
     if (key === "\u0003") {
       process.stdin.setRawMode(false);
-      
       process.emit("SIGINT");
-      console.log("Exiting keystroke logging...");
       return;
     }
 
-    // Save the keystroke and update typedText if printable
-
-    const normalizedKey = key === " " ? "[space]" : key.replace(/\r/, "\\r");
+    if (key === "\r") return; // Ignore Enter key
+    // Always record the keystorke, including backspace 
     keystrokeBuffer.push({ key, timestamp });
 
+    // Update typedText for display (simulate typing with backspace)
+    let tempText = "";
+    // Simulate typing with backspace
+    // TODO: Fix the backspace issue
+    for (const { key } of keystrokeBuffer) {
+      if (key === "\x08") {
+        // if (typedText.length > 0) {
+          typedText = typedText.slice(0, -1);
+          keystrokeBuffer.pop(); // Remove the last keystroke
+        // }
+      } else {
+        tempText += key;
+      }
+    }
+
+    typedText = tempText;
+    // Save the keystroke and update typedText if printable
+    // Log the keystroke
+
+    // Re-render the prompt in real-time
+    process.stdout.write("\x1b[2k\r"); // clear the current line
+    renderPromptRealtime(prompt, typedText); // Render the prompt with typed text
+
+    // Auto-end if finished typing
+    if (typedText.length >= prompt.length) {
+      process.stdin.setRawMode(false);
+      process.emit("SIGINT");
+    }
     // DEBUG: Log the keystroke
-    // console.log(`Key: ${normalizedKey}, Timestamp: ${timestamp}`);
+    process.stdout.cursorTo(0);
+
+    // Move cursort to the position after the last typed character
+    readLine.cursorTo(process.stdout, typedText.length)
   });
 }
