@@ -60,23 +60,9 @@
 
 ---
 
-### 🧠 Tip
-
-Keep your architecture modular:
-
-* `/src/logger.ts`
-* `/src/analyzer.ts`
-* `/src/prompt.ts`
-* `/src/storage.ts`
-* `/src/feedback.ts`
-* `/src/session.ts`
-* `index.ts` → entry point to orchestrate everything
-
----
-
 ### 📦 Example Output Goal
 
-```bash
+```terminal
 🎯 Typing Prompt:
 The quick brown fox jumps over the lazy dog.
 
@@ -90,6 +76,3 @@ The quick brown fox jumps over the lazy dog.
 - Suggestions: "Try slowing down near punctuation."
 ```
 
----
-
-Let me know if you want me to **generate the prompt system next** or help implement **basic session tracking and saving to JSON**.

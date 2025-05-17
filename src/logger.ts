@@ -6,6 +6,7 @@ export interface Keystroke {
 }
 
 const keystrokeBuffer: Keystroke[] = [];
+let typedText = ""; // New variable to store typed text
 
 export function getKeystrokes(): Keystroke[] {
   return keystrokeBuffer;
@@ -37,6 +38,8 @@ export function startLoggingKeystrokes() {
       console.log("Exiting keystroke logging...");
       return;
     }
+
+    // Save the keystroke and update typedText if printable
 
     const normalizedKey = key === " " ? "[space]" : key.replace(/\r/, "\\r");
     keystrokeBuffer.push({ key, timestamp });
