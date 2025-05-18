@@ -141,3 +141,6 @@ dist
 
 # json files logging
 data/session.json
+
+# 
+.vs

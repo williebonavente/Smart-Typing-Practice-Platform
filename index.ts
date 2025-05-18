@@ -6,29 +6,28 @@ import { handleCLIArgs } from "./src/cliHandler";
 import { getPrompt } from "./src/prompts/promptManager";
 import { showPrompt,
          renderPrompt,
-         clearScreen,
-         createText,
-         renderStats
+         renderStats,
+         clearScreen
  } from "./src/ui/promptUI";
+import { renderHeader } from "./src/ui/welcome"; 
+import { renderMenu } from "./src/ui/menu";
+ process.stdout.write("\x1B[?25l");
+ // // Handle command line arguments -> CLI here
+ const args = process.argv.slice(2);
+ 
+ if (handleCLIArgs(args)) process.exit(0);
+ 
+ const prompt = getPrompt();
+//  clearScreen();
+renderHeader();
+renderMenu(); 
+//  startLoggingKeystrokes(prompt);
+ 
+ 
+ process.on("SIGINT", () => {
 
-// // Handle command line arguments -> CLI here
-const args = process.argv.slice(2);
-
-if (handleCLIArgs(args)) process.exit(0);
-
-const prompt = getPrompt();
-// showPrompt(prompt);
-startLoggingKeystrokes(prompt);
-
-
-process.on("SIGINT", () => {
-    // clearScreen();
-    console.log(createText("Analayzing session...", 80)); // Adjust width as needed
     // TODO: Currently working
     const keystrokes = getKeystrokes();
-
-    // const typed = getTypedText();
-    const typed = reconstructTypedText(keystrokes);
     
     if (!keystrokes || keystrokes.length === 0) {
         console.log("No keystrokes recorded. Exiting...");

@@ -27,7 +27,6 @@ export function evaluatePromptTyping(prompt: string, keystrokes: { key: string }
             cursor++;
         }
     }
-
     let correct = 0;
     let notTyped = 0;
     let incorrect = 0;
