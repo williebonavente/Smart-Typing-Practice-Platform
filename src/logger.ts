@@ -52,21 +52,23 @@ export function startLoggingKeystrokes(prompt: string) {
     keystrokeBuffer.push({ key, timestamp });
 
     // Update typedText for display (simulate typing with backspace)
-    let tempText = "";
+    // Reset the typedText for each keypress
+    typedText = "";
     // Simulate typing with backspace
     // TODO: Fix the backspace issue
     for (const { key } of keystrokeBuffer) {
-      if (key === "\x08") {
+      if (key === "\x08" || key === "\x7f") {
         // if (typedText.length > 0) {
           typedText = typedText.slice(0, -1);
-          keystrokeBuffer.pop(); // Remove the last keystroke
+          // keystrokeBuffer.pop(); // Remove the last keystroke
         // }
+        // return;
       } else {
-        tempText += key;
+        typedText += key;
       }
     }
 
-    typedText = tempText;
+    // typedText = tempText;
     // Save the keystroke and update typedText if printable
     // Log the keystroke
 
@@ -85,4 +87,18 @@ export function startLoggingKeystrokes(prompt: string) {
     // Move cursort to the position after the last typed character
     readLine.cursorTo(process.stdout, typedText.length)
   });
+}
+
+export function reconstructTypedText(keystrokes: { key: string }[]): string {
+  let result ="";
+
+  for (const { key } of keystrokes) {
+    if (key === "\x08" || key === "\x7f") {
+       // Handle backspace
+       result = result.slice(0, -1);
+    } else {
+      result += key;
+    }
+  }
+  return result;
 }

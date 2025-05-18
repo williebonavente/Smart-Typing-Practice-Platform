@@ -1,4 +1,4 @@
-import { startLoggingKeystrokes, getKeystrokes, getTypedText } from "./src/logger";
+import { startLoggingKeystrokes, getKeystrokes, getTypedText, reconstructTypedText } from "./src/logger";
 import { analyzeTyping } from "./src/analyzer";
 import { saveSession, loadSessions } from "./src/storage";
 import { evaluatePromptTyping } from "./src/evaluator";
@@ -24,22 +24,24 @@ startLoggingKeystrokes(prompt);
 process.on("SIGINT", () => {
     // clearScreen();
     console.log(createText("Analayzing session...", 80)); // Adjust width as needed
-
+    // TODO: Currently working
     const keystrokes = getKeystrokes();
-    const typed = getTypedText();
+
+    // const typed = getTypedText();
+    const typed = reconstructTypedText(keystrokes);
     
     if (!keystrokes || keystrokes.length === 0) {
         console.log("No keystrokes recorded. Exiting...");
         process.exit();
     }
     const stats = analyzeTyping({ keystrokes });
-    const accuracyStats = evaluatePromptTyping(prompt, typed);
+    const accuracyStats = evaluatePromptTyping(prompt, keystrokes);
     console.log("\n Prompt vs. Typed Text");
-    renderPrompt(prompt, typed); // Compare Visually
+    renderPrompt(prompt, accuracyStats.history); // Compare Visually
 
     renderStats(stats, { accuracy: accuracyStats.accuracyPercentage }); // Render stats
 
-    // saveSession(stats);
+    saveSession(stats);
     console.log(accuracyStats)
     console.log("✅ Session saved!");
 
@@ -47,5 +49,3 @@ process.on("SIGINT", () => {
 });
 
 
-
-// TODO: Fix the cursor positioning issue
