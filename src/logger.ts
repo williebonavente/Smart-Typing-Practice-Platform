@@ -67,25 +67,26 @@ export function startLoggingKeystrokes(prompt: string) {
         typedText += key;
       }
     }
-
-    // typedText = tempText;
-    // Save the keystroke and update typedText if printable
-    // Log the keystroke
-
-    // Re-render the prompt in real-time
-    process.stdout.write("\x1b[2k\r"); // clear the current line
-    renderPromptRealtime(prompt, typedText); // Render the prompt with typed text
-
     // Auto-end if finished typing
     if (typedText.length >= prompt.length) {
       process.stdin.setRawMode(false);
       process.emit("SIGINT");
     }
+
+    // Re-render the prompt in real-time
+    process.stdout.write("\x1b[2K\r"); // clear the current line
+    let cursorPos = 0;
+    for (; cursorPos < prompt.length; cursorPos++) {
+      if (typedText[cursorPos] !== prompt[cursorPos]) break;
+    }
+    renderPromptRealtime(prompt, typedText, cursorPos); // Render the prompt with typed text
+    // readLine.cursorTo(process.stdout, typedText.length);
+
+    // Find the first character that needs to be typed
     // DEBUG: Log the keystroke
-    process.stdout.cursorTo(0);
+    // process.stdout.cursorTo(0);
 
     // Move cursort to the position after the last typed character
-    readLine.cursorTo(process.stdout, typedText.length)
   });
 }
 
