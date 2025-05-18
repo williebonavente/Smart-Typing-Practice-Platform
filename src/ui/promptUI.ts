@@ -1,7 +1,9 @@
 // Handles terminal for UI rendering
 import chalk from 'chalk';
+import { read } from 'fs';
+import readline from "readline";
 
-export function renderPromptRealtime(prompt: string, typed: string): void {
+export function renderPromptRealtime(prompt: string, typed: string, cursorPos?: number): void {
     let output = "";
     for (let i = 0; i < prompt.length; i++) {
         const char = prompt[i];
@@ -20,7 +22,12 @@ export function renderPromptRealtime(prompt: string, typed: string): void {
     }
 
     // Clear the current line and print update output
+    readline.cursorTo(process.stdout, 0); // Move cursor to the beginning of the line
     process.stdout.write("\r" + output);
+
+    // Move cursor to the desired position
+    if (typeof cursorPos === 'number') readline.cursorTo(process.stdout, cursorPos);
+    else readline.cursorTo(process.stdout, 0); // Move cursor to the beginning of the line
 }
 
 
