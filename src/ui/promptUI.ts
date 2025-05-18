@@ -33,14 +33,21 @@ export function showPrompt(prompt: string): void {
 }
 
 // ADD: Function to render the prompt with typed text
-export function renderPrompt(prompt: string, typed: string): void {
+export function renderPrompt(prompt: string, history: Array<Set<string>>): void {
     let output ="";
     for (let i = 0; i < prompt.length; i++) {
-        if (typed[i] == undefined) {
+        if (!history[i] || history[i].size === 0) {
             output += chalk.gray(prompt[i]);
-        } else if (typed[i] === prompt[i]) {
+        } else if (
+            history[i].size === 1 &&
+            history[i].has(prompt[i])
+        ) {
             output += chalk.green(prompt[i]);
-        } else {
+        } else if (history[i].has(prompt[i])) {
+            output += chalk.bgRed.green(prompt[i]);
+        }
+         else {
+            // Only mistakes
             output += chalk.bgRed.white(prompt[i]);
         }
     }
