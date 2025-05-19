@@ -14,21 +14,23 @@
 ### 🛠️ In Progress / Next Steps
 #### 🧩 1. **Text Prompt System**
 *Currently doing*
-* [ ] Add a text prompt generator (quote, sentence, word list)
-* [ ] Display prompt at app start (or on demand)
+* [x] Add a text prompt generator (quote, sentence, word list)
+* [x] Display prompt at app start (or on demand)
 * [ ] Log accuracy by comparing typed characters to prompt
+* [ ] Command Palette
 
 #### 🔒 2. **User Session System (Optional for Feedback/History)**
 
 * [ ] Add local user login/signup (basic username/password)
 * [ ] Store session data (timestamp, WPM, accuracy, etc.)
 * [ ] Associate stats with user for feedback/history
+* [ ] Create a Welcoming Page
 
 #### 🧠 3. **AI Feedback Module (MiniCPM-V integration)**
 
 * [ ] Process typing data (keystrokes, mistakes, pauses)
 * [ ] Generate feedback (e.g., “You tend to rush at the start”)
-* [ ] Render natural language suggestion using MiniCPM-V
+* [ ] Render natural language suggestion. 
 
 #### 📊 4. **Stats Dashboard**
 
