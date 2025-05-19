@@ -11,7 +11,7 @@ import { showPrompt,
  } from "./src/ui/promptUI";
 import { renderHeader } from "./src/ui/welcome"; 
 import { renderMenu } from "./src/ui/menu";
- process.stdout.write("\x1B[?25l");
+//  process.stdout.write("\x1B[?25l");
  // // Handle command line arguments -> CLI here
  const args = process.argv.slice(2);
  
@@ -19,8 +19,12 @@ import { renderMenu } from "./src/ui/menu";
  
  const prompt = getPrompt();
 //  clearScreen();
-renderHeader();
-renderMenu(); 
+(async () => {
+    renderHeader && await renderHeader();
+    renderMenu();
+})();
+// renderHeader();
+// renderMenu(); 
 //  startLoggingKeystrokes(prompt);
  
  

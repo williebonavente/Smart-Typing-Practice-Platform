@@ -17,6 +17,7 @@
 * [x] Add a text prompt generator (quote, sentence, word list)
 * [x] Display prompt at app start (or on demand)
 * [ ] Log accuracy by comparing typed characters to prompt
+* [ ] Command Palette
 
 #### 🔒 2. **User Session System (Optional for Feedback/History)**
 

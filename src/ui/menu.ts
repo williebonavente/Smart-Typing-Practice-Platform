@@ -1,82 +1,75 @@
 import { theme } from './theme';
 import chalk from 'chalk';
+import stripAnsi from 'strip-ansi';
 
-// create a function to render the menu
+
+async function typewriter(text: string, pad: string) {
+    for (const char of text) {
+        process.stdout.write(pad + char);
+        await new Promise(res => setTimeout(res, 30));
+        pad = ""; // Only pad the first char
+    }
+    process.stdout.write('\n');
+}
 
 export function renderMenu(): void {
-//  Main Menu of the Application
-
-// TODO: Polish the UI
-/*
-        [1] Start Typing Practice  // Anonymous User
-             [1] Time-Based Practice
-             [2] Word Count-Based
-             [3] Character Length-Based
-             [4] Return to Main Menu
-
-        [2] Login / Signup
-             [1] Signup
-             [2] Login
-                   [1] View Typing Dashboard Details
-		[1] Heatmap (Typing Frequency & Error Heatmap)
-		[2] WPM / CPM Over Time (Graph View)
-		[3] Accuracy Progression
-		[4] Streak / Consistency Tracker
-		[5] Back
-	       [2] View Past Sessions
-                   [3] Start Practice
-                   [4] Logout
-                [3] Back to Main Menu
-        [3] Help / Command Reference
-        [4] Exit
-
-*/
-const menu = [
+    // Menu: [icon+label, hotkey]
+    // console.log('\n\n');
+    const menu = [
+        [chalk.cyan("⌨️ ") + chalk.bold("Start Typing Practice"), chalk.blueBright("t")],
+        [chalk.yellow("  ") + chalk.bold("Login / Signup"), chalk.blueBright("y")],
+        [chalk.magenta("󰞋  ") + chalk.bold("Help / Command Reference"), chalk.blueBright(` h `)],
+        [chalk.red("  ") + chalk.bold("Exit"), chalk.redBright("z")]
+    ];
     
-        [chalk.bold(`   1   `), "Start Typing Practice", chalk.gray("Anonymous User")],
-        [chalk.bold("2"), "Login / Signup", ""],
-        [chalk.bold("3"), "Help / Command Reference", ""],
-        [chalk.bold("4"), "Exit", ""]
-    ];
-
-    const submenus = [
-        ["  1.1", "Time-Based Practice"],
-        ["  1.2", "Word Count-Based"],
-        ["  1.3", "Character Length-Based"],
-        ["  1.4", "Return to Main Menu"],
-        ["  2.1", "Signup"],
-        ["  2.2", "Login"],
-        ["    2.2.1", "View Typing Dashboard Details"],
-        ["    2.2.2", "View Past Sessions"],
-        ["    2.2.3", "Start Practice"],
-        ["    2.2.4", "Logout"],
-        ["    2.2.5", "Back to Main Menu"]
-    ];
-
-    // Draw table
-    const line = chalk.gray("┌" + "─".repeat(38) + "┐");
-    const bottom = chalk.gray("└" + "─".repeat(38) + "┘");
-    console.log(theme.title("Star Typing Practice"));
+    // Find the longest label (without chalk formatting)
+    const plainLabels = menu.map(([label]) => stripAnsi(label));
+    const plainHotkeys = menu.map(([, hotkey]) => stripAnsi(hotkey));
+    const maxLabelLength = Math.max(...plainLabels.map(l => l.length));
+    const maxHotkeyLength = Math.max(...plainHotkeys.map(h => h.length));
+    const menuWidth = maxLabelLength + maxHotkeyLength + 7; // 7 for borders and spacing
+    
+    const termWidth = process.stdout.columns || 80;
+    const pad = Math.max(0, Math.floor((termWidth - menuWidth) / 2));
+    const padStr = " ".repeat(pad);
+    
+    const line = padStr + chalk.gray("┌" + "─".repeat(menuWidth) + "┐");
+    const bottom = padStr + chalk.gray("└" + "─".repeat(menuWidth) + "┘");
+    // TODO: Modify the title to be more appealing
+    // Center the title/logo
+    // const title = theme.title("Your Typing Practice Terminal");
+    const titlePad = " ".repeat(Math.max(0, Math.floor((termWidth) / 2)));
+    // console.log(titlePad + title);
+    
     console.log(line);
-    menu.forEach(([num, label, desc]) => {
+    menu.forEach(([label, hotkey], idx) => {
+        const plainLabel = plainLabels[idx];
+        const plainHotkey = plainHotkeys[idx];
+
+        const labelPad = label + " ".repeat(maxLabelLength - plainLabel.length);
+        const hotkeyPad = hotkey + " ".repeat(maxHotkeyLength - plainHotkey.length);
         const row = chalk.gray("│ ") +
-            chalk.cyan(num.padEnd(2)) +
-            chalk.white(label.padEnd(25)) +
-            chalk.gray(desc.padEnd(8)) +
-            chalk.gray(" │");
-        console.log(row);
-    });
-    console.log(bottom);
+            labelPad +
+            chalk.gray("         ") +
+            hotkeyPad
+            console.log(padStr + row);
+        });
+        console.log(bottom);
+        
+        console.log(); // 1 line of padding at the bottom
+        // typewriter(titlePad + title, " ");
+    // After this how to add animations and other effects??
 
-    // Optionally, show submenus
-    submenus.forEach(([num, label]) => {
-        console.log(
-            chalk.gray("   ") +
-            chalk.cyan(num.padEnd(8)) +
-            chalk.white(label)
-        );
-    });
+    // Example: Animated dots after menu
+    // let dots = 0;
+    // const interval = setInterval(() => {
+    //     process.stdout.write('\r' + ' '.repeat(pad) + chalk.green('Loading' + '.'.repeat(dots % 4) + '   '));
+    //     dots++;
+    //     if (dots > 12) { // Stop after a few cycles
+    //         clearInterval(interval);
+    //         process.stdout.write('\r' + ' '.repeat(pad) + ' '.repeat(20) + '\n'); // Clear line
+    //     }
+    // }, 200);
 
-console.log(theme.title(`Star Typing Practice`));
-console.log(chalk.yellow("⌨️  ") + theme.title("Star Typing Practice"));
+
 }
