@@ -12,5 +12,5 @@ export const theme = {
   statValue: chalk.hex("#e0af68"),
   title: chalk.hex("#7dcfff").bold,
   border: chalk.hex("#3b4261"),
-  cursor: chalk.inverse,
+  cursor: (char: string) => chalk.bgWhite.black.bold(char),
 };

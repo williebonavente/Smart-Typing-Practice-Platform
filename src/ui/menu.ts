@@ -1,19 +1,11 @@
 import { theme } from './theme';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
+import { renderHeader } from './welcome';
 
-
-async function typewriter(text: string, pad: string) {
-    for (const char of text) {
-        process.stdout.write(pad + char);
-        await new Promise(res => setTimeout(res, 30));
-        pad = ""; // Only pad the first char
-    }
-    process.stdout.write('\n');
-}
-
-export function renderMenu(): void {
+export async function renderMenu(): Promise<void> {
     // Menu: [icon+label, hotkey]
+    if (renderHeader) await renderHeader();
     // console.log('\n\n');
     const menu = [
         [chalk.cyan("⌨️ ") + chalk.bold("Start Typing Practice"), chalk.blueBright("t")],
@@ -57,19 +49,4 @@ export function renderMenu(): void {
         console.log(bottom);
         
         console.log(); // 1 line of padding at the bottom
-        // typewriter(titlePad + title, " ");
-    // After this how to add animations and other effects??
-
-    // Example: Animated dots after menu
-    // let dots = 0;
-    // const interval = setInterval(() => {
-    //     process.stdout.write('\r' + ' '.repeat(pad) + chalk.green('Loading' + '.'.repeat(dots % 4) + '   '));
-    //     dots++;
-    //     if (dots > 12) { // Stop after a few cycles
-    //         clearInterval(interval);
-    //         process.stdout.write('\r' + ' '.repeat(pad) + ' '.repeat(20) + '\n'); // Clear line
-    //     }
-    // }, 200);
-
-
 }
